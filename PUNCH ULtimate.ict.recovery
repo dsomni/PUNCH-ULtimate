@@ -5,44 +5,349 @@ libs:
     gridX: 1024
     gridY: 1024
   fittoscreen:
-    mode: scaleFit
+    mode: fastScale
   mouse: {}
   keyboard: {}
   keyboard.polyfill: {}
   sound.howler: {}
 textures:
+  - name: Block
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 96
+    imgHeight: 96
+    width: 96
+    height: 96
+    offx: 0
+    offy: 0
+    origname: i6307a996-3c15-444b-af57-3dc72cb8729b.png
+    shape: rect
+    left: 0
+    right: 96
+    top: 0
+    bottom: 96
+    uid: 6307a996-3c15-444b-af57-3dc72cb8729b
+    padding: 1
+    source: 'D:\PUNCH-ULtimate\PUNCH ULtimate\img\Block.png'
+    lastmod: 1605203848687
+  - name: Block_top
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 96
+    imgHeight: 96
+    width: 96
+    height: 96
+    offx: 0
+    offy: 0
+    origname: i1b981f5b-5c14-4c06-93f6-a9a1454aa170.png
+    shape: rect
+    left: 0
+    right: 96
+    top: 0
+    bottom: 96
+    uid: 1b981f5b-5c14-4c06-93f6-a9a1454aa170
+    padding: 1
+    source: 'D:\PUNCH-ULtimate\PUNCH ULtimate\img\Block_top.png'
   - name: Hero
     untill: 0
     grid:
       - 1
       - 1
     axis:
-      - 110
-      - 407
+      - 39
+      - 170
     marginx: 0
     marginy: 0
-    imgWidth: 220
-    imgHeight: 407
-    width: 220
-    height: 407
+    imgWidth: 78
+    imgHeight: 170
+    width: 78
+    height: 170
     offx: 0
     offy: 0
-    origname: i29d9a1f5-1fb1-496c-859f-722c22cf28be.jpg
+    origname: i42732561-da41-4e36-87e8-5707177721cb.png
     shape: rect
-    left: 72
-    right: 70
-    top: 392
+    left: 32
+    right: 28
+    top: 170
     bottom: 0
-    uid: 29d9a1f5-1fb1-496c-859f-722c22cf28be
+    uid: 42732561-da41-4e36-87e8-5707177721cb
     padding: 1
-    source: 'D:\PUNCH-ULtimate\PUNCH ULtimate\img\Hero.jpg'
-    lastmod: 1605202808738
+    source: 'D:\PUNCH-ULtimate\PUNCH ULtimate\img\Hero.png'
+    lastmod: 1605205258809
+  - name: BG
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 1024
+    imgHeight: 720
+    width: 1024
+    height: 720
+    offx: 0
+    offy: 0
+    origname: i639108db-b381-4ff7-8a64-d689696dc17f.png
+    shape: rect
+    left: 0
+    right: 1024
+    top: 0
+    bottom: 720
+    uid: 639108db-b381-4ff7-8a64-d689696dc17f
+    padding: 1
+    source: 'D:\PUNCH-ULtimate\PUNCH ULtimate\img\BG.png'
+    lastmod: 1605205778729
+    ignoreTiledUse: true
 skeletons: []
-types: []
+types:
+  - name: Hero
+    depth: 0
+    oncreate: |-
+      this.jumpSpeed = -11;
+      this.gravity = 0.5;
+
+      this.hspeed = 0; // Horizontal speed
+      this.vspeed = 0; // Vertical speed
+
+      ct.camera.follow = this;
+      ct.camera.borderX = 450;
+      ct.camera.borderY = 200;
+    onstep: |-
+      this.movespeed = 4 * ct.delta; // Max horizontal speed
+
+      if (ct.actions.MoveLeft.down) {
+          // If the A key or left arrow on a keyboard is down, then move to left
+          this.hspeed = -this.movespeed;
+      } else if (ct.actions.MoveRight.down) {
+          // If the D key or right arrow on a keyboard is down, then move to right
+          this.hspeed = this.movespeed;
+      } else {
+          // Don't move horizontally if no input
+          this.hspeed = 0;
+      }
+
+      // If there is ground underneath the Robot…
+      if (ct.place.occupied(this, this.x, this.y + 1, 'Solid')) {
+          // …and the W key or the spacebar is down…
+          if (ct.actions.Jump.down) {
+              // …then jump!
+              this.vspeed = this.jumpSpeed;
+          } else {
+              // Reset our vspeed. We don't want to be buried underground!
+              this.vspeed = 0;
+          }
+      } else {
+          // If there is no ground
+          this.vspeed += this.gravity * ct.delta;
+      }
+
+      // Move by horizontal axis, pixel by pixel
+      for (var i = 0; i < Math.abs(this.hspeed); i++) {
+          if (ct.place.free(this, this.x + Math.sign(this.hspeed), this.y, 'Solid')) {
+              this.x += Math.sign(this.hspeed);
+          } else {
+              break;
+          }
+      }
+      // Do the same for vertical speed
+      for (var i = 0; i < Math.abs(this.vspeed); i++) {
+          if (ct.place.free(this, this.x, this.y + Math.sign(this.vspeed), 'Solid')) {
+              this.y += Math.sign(this.vspeed);
+          } else {
+              break;
+          }
+      }
+    ondraw: ''
+    ondestroy: ''
+    texture: 42732561-da41-4e36-87e8-5707177721cb
+    extends: {}
+    uid: 8da4f3a7-cf4a-4c17-8e15-4b036526a213
+    lastmod: 1605205264129
+  - name: Block_top
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: 1b981f5b-5c14-4c06-93f6-a9a1454aa170
+    extends:
+      ctype: Solid
+    uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+    lastmod: 1605203898502
+  - name: Block
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: 6307a996-3c15-444b-af57-3dc72cb8729b
+    extends:
+      ctype: Solid
+    uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+    lastmod: 1605204258742
 sounds: []
 styles: []
-rooms: []
-actions: []
+rooms:
+  - name: level_01
+    oncreate: ''
+    onstep: ''
+    ondraw: ''
+    onleave: ''
+    width: 1024
+    height: 720
+    backgrounds:
+      - depth: -10
+        texture: 639108db-b381-4ff7-8a64-d689696dc17f
+        extends:
+          movementX: 0
+          repeat: repeat
+    copies:
+      - x: 192
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 288
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 384
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 192
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 288
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 384
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 576
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 672
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 768
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 864
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 480
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 576
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 672
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 768
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 864
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 576
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 480
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 384
+        'y': 384
+        uid: 8da4f3a7-cf4a-4c17-8e15-4b036526a213
+      - x: 960
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1056
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1152
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1344
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1248
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1440
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1440
+        'y': 384
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1536
+        'y': 288
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 96
+        'y': 288
+        uid: 474fd8c4-3d8c-4300-b2bd-8d21d42fb59c
+      - x: 1056
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 960
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1152
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1248
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1344
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1440
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1536
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1536
+        'y': 480
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+      - x: 1536
+        'y': 384
+        uid: 1f964537-9bef-41b9-bf7b-60dd5380ce60
+    tiles:
+      - depth: -10
+        tiles: []
+        extends: {}
+    uid: 6c6dca86-be54-46a6-bc36-febb03507d3b
+    thumbnail: febb03507d3b
+    extends: {}
+    gridX: 96
+    gridY: 96
+    backgroundColor: 'rgba(0,0,0,0)'
+    lastmod: 1605205552907
+actions:
+  - name: MoveRight
+    methods:
+      - code: keyboard.ArrowRight
+  - name: MoveLeft
+    methods:
+      - code: keyboard.ArrowLeft
+  - name: Jump
+    methods:
+      - code: keyboard.ArrowUp
 emitterTandems: []
 scripts: []
 starting: 0
@@ -74,3 +379,4 @@ settings:
     invertPreloaderScheme: true
   fps: 30
 fonts: []
+palette: []
